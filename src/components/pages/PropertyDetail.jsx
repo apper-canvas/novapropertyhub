@@ -22,11 +22,10 @@ const PropertyDetail = () => {
   const [activeTab, setActiveTab] = useState("overview")
   const { isFavorite, toggleFavorite } = useFavorites()
 
-  const loadProperty = async () => {
+const loadProperty = async () => {
     try {
       setError(null)
       setLoading(true)
-      await new Promise(resolve => setTimeout(resolve, 400))
       const data = await propertyService.getById(Number(id))
       if (data) {
         setProperty(data)
@@ -35,7 +34,7 @@ const PropertyDetail = () => {
       }
     } catch (err) {
       setError("Failed to load property details. Please try again.")
-      console.error("Error loading property:", err)
+      console.error("Error loading property:", err?.response?.data?.message || err.message)
     } finally {
       setLoading(false)
     }

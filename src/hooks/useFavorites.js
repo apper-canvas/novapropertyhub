@@ -13,9 +13,10 @@ export const useFavorites = () => {
       if (savedFavorites) {
         setFavorites(JSON.parse(savedFavorites))
       }
-    } catch (error) {
+} catch (error) {
       console.error("Error loading favorites:", error)
       setFavorites([])
+      toast.error("Failed to load favorites")
     }
   }, [])
 
@@ -25,6 +26,7 @@ export const useFavorites = () => {
       localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites))
     } catch (error) {
       console.error("Error saving favorites:", error)
+      toast.error("Failed to save favorites")
     }
   }, [favorites])
 

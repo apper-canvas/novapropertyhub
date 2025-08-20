@@ -28,38 +28,23 @@ const SearchResults = () => {
     location: ""
   })
 
-  const searchProperties = async (searchQuery) => {
+const searchProperties = async (searchQuery) => {
     try {
       setError(null)
       setLoading(true)
-      await new Promise(resolve => setTimeout(resolve, 400))
       
-      const allProperties = await propertyService.getAll()
+      const results = await propertyService.searchProperties(searchQuery)
       
-      if (!searchQuery.trim()) {
-        setProperties(allProperties)
-        setFilteredProperties(allProperties)
-        return
+      if (!results || results.length === 0) {
+        setProperties([])
+        setFilteredProperties([])
+      } else {
+        setProperties(results)
+        setFilteredProperties(results)
       }
-
-      const searchTerm = searchQuery.toLowerCase()
-      const filtered = allProperties.filter(property => {
-        return (
-          property.title.toLowerCase().includes(searchTerm) ||
-          property.description.toLowerCase().includes(searchTerm) ||
-          property.location.city.toLowerCase().includes(searchTerm) ||
-          property.location.state.toLowerCase().includes(searchTerm) ||
-          property.location.neighborhood?.toLowerCase().includes(searchTerm) ||
-          property.propertyType.toLowerCase().includes(searchTerm) ||
-          property.features?.some(feature => feature.toLowerCase().includes(searchTerm))
-        )
-      })
-
-      setProperties(filtered)
-      setFilteredProperties(filtered)
     } catch (err) {
       setError("Failed to search properties. Please try again.")
-      console.error("Error searching properties:", err)
+      console.error("Error searching properties:", err?.response?.data?.message || err.message)
     } finally {
       setLoading(false)
     }

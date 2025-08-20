@@ -22,17 +22,22 @@ const BrowseProperties = () => {
     location: ""
   })
 
-  const loadProperties = async () => {
+const loadProperties = async () => {
     try {
       setError(null)
       setLoading(true)
-      await new Promise(resolve => setTimeout(resolve, 300))
       const data = await propertyService.getAll()
-      setProperties(data)
-      setFilteredProperties(data)
+      if (!data || data.length === 0) {
+        setProperties([])
+        setFilteredProperties([])
+        setError("No properties available at the moment.")
+      } else {
+        setProperties(data)
+        setFilteredProperties(data)
+      }
     } catch (err) {
       setError("Failed to load properties. Please try again.")
-      console.error("Error loading properties:", err)
+      console.error("Error loading properties:", err?.response?.data?.message || err.message)
     } finally {
       setLoading(false)
     }
